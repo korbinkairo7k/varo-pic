@@ -1,63 +1,42 @@
 # Varopic
 
-A complete responsive landing page built with React, TypeScript, Vite and Tailwind CSS. It uses local Manrope and Inter fonts and ten locally stored real photographs, including responsive image variants. The static build needs no external image or font service.
+A responsive React and TypeScript website built with Vite.
 
-## Develop and build
+## Upload to GitHub
 
-Use Node.js 22 or newer and npm.
+Extract this ZIP, create a GitHub repository, and upload the extracted files and folders to its root. Include the hidden `.gitignore` and `.env.example` files. Do not upload the ZIP itself or `node_modules`.
+
+## Run locally
+
+Install Node.js 22.12 or newer, then run:
 
 ```sh
 npm ci
 npm run dev
-npm run lint
+```
+
+## Build and host
+
+```sh
 npm run build
-npm run preview
 ```
 
-`dist/` is the deployable static website. `.openai/hosting.json` preserves the private Sites project identity and declares this output directory. Keep this identity when updating the existing Site.
+Publish the resulting `dist` folder using a static hosting service. This version uses paths relative to the domain root. For GitHub Pages, use a root website repository or custom domain; hosting under a repository subfolder requires adapting the asset paths and Vite base first. Uploading source to GitHub alone does not publish the website.
 
-## Contact form configuration — required before accepting inquiries
+Update the canonical URL and social sharing URLs in `index.html` when deploying to your own domain.
 
-No existing submission service or business contact address was supplied. The form is fully prepared but currently cannot send messages. It states this visibly. It validates all five fields, focuses the first invalid field, announces errors, retains unsent content, and never displays a false success message.
+## Official branding
 
-1. Configure a real HTTPS endpoint controlled by Varopic, with email delivery and/or durable storage. The endpoint must validate submissions on the server and apply spam/rate protections.
-2. Copy `.env.example` to `.env.local` and set `VITE_CONTACT_ENDPOINT` to its URL, then rebuild. This value is embedded at build time. A runtime setting alone will not alter the existing static bundle.
-3. If the endpoint is on another origin, allow the deployed Site origin via CORS, including `OPTIONS`, `POST`, `Content-Type` and `Accept`.
-4. Return a successful HTTP response with JSON `{ "accepted": true }` only after the submission has actually been accepted for durable storage/delivery. An HTTP 200 response without this flag is treated as unconfirmed.
-5. Verify an actual inquiry reaches its intended destination before public launch.
+The supplied logo is preserved unchanged at `public/images/varopic-mark.png`. Its transparent margins are framed out for clear display in the header, footer, and mobile connection graphic. The original icon is at `public/favicon.ico`, linked from `index.html`.
 
-The JSON payload is:
+Search engines control when the favicon appears after the public website is crawled.
 
-```json
-{
-  "name": "Example name",
-  "email": "person@example.com",
-  "company": "Example company",
-  "inquiry": "Looking for a partner",
-  "message": "The visitor's message"
-}
-```
+## Contact form
 
-The inquiry value is one of `Looking for a partner`, `Offering products or services`, or `General inquiry`. Requests time out after 15 seconds. Failures preserve the fields. Never put a secret API key in `VITE_` settings or the client source; credentials belong on the server. No submissions are kept in browser storage, analytics or cookies.
+Direct email links point to hello@varopic.com and samjezme@varopic.com. The form currently has no delivery service configured and clearly directs visitors to email the team.
 
-## Content and assets
+To enable delivery, set `VITE_CONTACT_ENDPOINT` in your hosting build environment and rebuild. The endpoint must accept JSON POST requests with `name`, `email`, `company`, `inquiry`, and `message`, then return a successful HTTP status with `{ "accepted": true }` only after accepting the message for storage or delivery. Configure CORS if hosted on another origin. Keep secret keys on the server, never in `VITE_` variables. Verify actual delivery before launch.
 
-- `src/App.tsx`: all page copy, sections, navigation and form behavior.
-- `src/styles.css`: responsive visual system and reduced-motion support.
-- `public/images/`: ten photos, each with a 600px responsive variant.
-- `IMAGE-SOURCES.md`: source pages, photographers, license details and crop guidance.
-- `public/font-licenses/`: licenses for the bundled typefaces.
-- `index.html`: page title, description, canonical URL and social preview metadata. Update the absolute metadata URLs when moving to a custom domain.
-- `public/favicon.svg`: simple Varopic initial favicon, matching the text wordmark.
+## Assets
 
-The three commercial opportunities are explicitly illustrative. The service strip describes seven industry sectors, three business scales and one point of contact. The $30M+ connections-value figure and client-growth positioning were supplied by the owner on 4 November 2026. They are presented specifically as connections value in US dollars, without inventing a measurement period, revenue, completed-deal totals, returns or client growth percentages. Keep supporting business records for this owner-supplied claim and update it when appropriate. No client names, testimonials, offices, team members or unverified contact details were added.
-
-## Browser verification
-
-Inspected at 390px, 768px and 1440px. Verified phone, tablet and desktop composition; image loading and crops; 1/2/3-column industry layouts; no horizontal overflow; anchor destinations; mobile menu open/close/Escape; inquiry preselection from both panels; empty-field and email validation; first-error focus; and honest unsent feedback with no configured endpoint. Browser error/warning logs were empty during these checks.
-
-Lint and the production build pass. The production dependency audit reports zero known vulnerabilities. The development-only lint dependency tree currently reports 12 moderate findings inherited from minimatch, with no supported automatic fix; it is excluded from the deployed static bundle. Recheck these developer dependencies during maintenance. This is a functional and visual review, not a complete accessibility audit.
-
-## Launch details
-
-The initial Site is private to its owner. Configure the inquiry endpoint before accepting public traffic. Real legal/social destinations can be added when provided; no placeholder destinations are included. Source and deployment packages contain no contact service credentials.
+Image attributions are in `IMAGE-SOURCES.md`; font licenses are in `public/font-licenses/`. This archive excludes hosting credentials, Git history, dependencies, and generated build output.
