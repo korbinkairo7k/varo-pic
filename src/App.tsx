@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent, SVGProps } from 'react'
 
+function BrandMark() {
+  // Frame the supplied artwork without changing the original image file.
+  return <svg className="brand-mark" viewBox="317 378 629 472" width="36" height="27" aria-hidden="true" focusable="false"><image href="/images/varopic-mark.png" width="1254" height="1254" /></svg>
+}
+
+function ConnectionIcon({ type }: { type: 'suppliers' | 'services' | 'partners' }) {
+  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{type === 'suppliers' ? <><path d="m12 3 9 5-9 5-9-5 9-5ZM3 8v9l9 5 9-5V8M12 13v9M7.5 5.5l9 5" /></> : type === 'services' ? <><rect x="3" y="7" width="18" height="14" rx="3" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12a22 22 0 0 0 18 0M10 13v3h4v-3" /></> : <><circle cx="8" cy="8" r="3" /><path d="M2 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6M17 15a5 5 0 0 1 5 5v1" /></>}</svg>
+}
+
 function Arrow({ diagonal = false, ...props }: SVGProps<SVGSVGElement> & { diagonal?: boolean }) {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>{diagonal ? <path d="M6 18 18 6M6 6h12v12" /> : <path d="M4 12h15m-6-6 6 6-6 6" />}</svg>
 }
@@ -39,6 +48,41 @@ const emptyFields: FormFields = { name: '', email: '', company: '', inquiry: '',
 const inquiryLabels = { partner: 'Looking for a partner', offering: 'Offering products or services', general: 'General inquiry' }
 
 function App() {
+  const [connectionValue, setConnectionValue] = useState(30)
+  const impactAmount = useRef<HTMLParagraphElement>(null)
+
+  useEffect(() => {
+    const element = impactAmount.current
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (!element || motion.matches || !('IntersectionObserver' in window)) return
+    let frame = 0
+    const observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return
+      observer.disconnect()
+      const start = performance.now()
+      setConnectionValue(0)
+      const tick = (now: number) => {
+        const progress = Math.min((now - start) / 800, 1)
+        setConnectionValue(Math.round(30 * (1 - Math.pow(1 - progress, 3))))
+        if (progress < 1) frame = requestAnimationFrame(tick)
+      }
+      frame = requestAnimationFrame(tick)
+    }, { threshold: 0.5 })
+    const finish = () => {
+      if (!motion.matches) return
+      observer.disconnect()
+      cancelAnimationFrame(frame)
+      setConnectionValue(30)
+    }
+    observer.observe(element)
+    motion.addEventListener('change', finish)
+    return () => {
+      observer.disconnect()
+      cancelAnimationFrame(frame)
+      motion.removeEventListener('change', finish)
+    }
+  }, [])
+
   const [menuOpen, setMenuOpen] = useState(false)
   const [fields, setFields] = useState<FormFields>(emptyFields)
   const [errors, setErrors] = useState<Errors>({})
@@ -48,6 +92,32 @@ function App() {
   const formRef = useRef<HTMLFormElement>(null)
   const statusRef = useRef<HTMLDivElement>(null)
   const endpoint = import.meta.env.VITE_CONTACT_ENDPOINT?.trim() ?? ''
+
+  useEffect(() => {
+    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.industry-card, .opportunity-card, .pathway-panel'))
+    const observer = new IntersectionObserver(entries => {
+      let stagger = 0
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue
+        const card = entry.target as HTMLElement
+        card.style.setProperty('--card-delay', `${(stagger++ % 3) * 65}ms`)
+        card.classList.add('card-enter')
+        observer.unobserve(card)
+      }
+    }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' })
+    // Keep content visible by default, including cards already in view on arrival.
+    cards.forEach(card => {
+      if (card.getBoundingClientRect().top >= window.innerHeight) observer.observe(card)
+    })
+    return () => {
+      observer.disconnect()
+      cards.forEach(card => {
+        card.classList.remove('card-enter')
+        card.style.removeProperty('--card-delay')
+      })
+    }
+  }, [])
 
   useEffect(() => {
     if (!menuOpen) return
@@ -93,7 +163,7 @@ function App() {
       return
     }
     if (!endpoint) {
-      setStatusMessage('Your message has not been sent. Online inquiries are not available yet. Please try again later; your details remain in the form.')
+      setStatusMessage('Your message has not been sent. Please email hello@varopic.com or samjezme@varopic.com. Your details remain in the form.')
       setStatus('error')
       requestAnimationFrame(() => statusRef.current?.focus())
       return
@@ -131,10 +201,10 @@ function App() {
     <a className="skip-link" href="#main">Skip to content</a>
     <header className="site-header">
       <div className="container header-inner">
-        <a href="#" className="wordmark" aria-label="Varopic home">varopic<span>.</span></a>
+        <a href="#" className="brand-lockup" aria-label="Varopic home"><BrandMark /><span>varopic</span></a>
         <nav className="desktop-nav" aria-label="Main navigation"><a href="#about">About</a><a href="#industries">Industries</a><a href="#how-we-work">How We Work</a></nav>
 
-        <button className="menu-toggle" ref={menuButton} type="button" aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(value => !value)}><svg width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" fill="none" aria-hidden="true">{menuOpen ? <path d="m5 5 14 14M5 19 19 5" /> : <path d="M3 7h18M3 16h18" />}</svg></button>
+        <button className="menu-toggle" ref={menuButton} type="button" aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(value => !value)}><span className="menu-line" aria-hidden="true" /><span className="menu-line" aria-hidden="true" /></button>
       </div>
       <nav id="mobile-navigation" className="mobile-nav" aria-label="Mobile navigation" hidden={!menuOpen}><a href="#about" onClick={() => setMenuOpen(false)}>About <Arrow /></a><a href="#industries" onClick={() => setMenuOpen(false)}>Industries <Arrow /></a><a href="#how-we-work" onClick={() => setMenuOpen(false)}>How We Work <Arrow /></a></nav>
     </header>
@@ -143,7 +213,22 @@ function App() {
       <section className="hero container" aria-labelledby="hero-title">
         <div className="hero-copy">
           <h1 id="hero-title">The right connections.<span>For your next big opportunity.</span></h1>
-          <p className="hero-description">Varopic connects businesses with suppliers, service providers, and commercial partners across the United States, helping turn business requirements into productive conversations.</p>
+          <div className="mobile-connection-visual" role="img" aria-label="Your business connects through Varopic to suppliers, service providers, and commercial partners.">
+            <div aria-hidden="true">
+              <div className="connection-heading"><span>Your business, connected.</span><Arrow diagonal /></div>
+              <div className="connection-map">
+                <div className="connection-origin"><div className="connection-hub"><BrandMark /><span>varopic</span></div><span>Your connection<br />team</span></div>
+                <div className="connection-branches"><i /><i /><i /></div>
+                <div className="connection-destinations">
+                  <div className="connection-card"><ConnectionIcon type="suppliers" /><span>Suppliers<small>Products & supply</small></span></div>
+                  <div className="connection-card"><ConnectionIcon type="services" /><span>Services<small>Specialist expertise</small></span></div>
+                  <div className="connection-card"><ConnectionIcon type="partners" /><span>Partners<small>Shared opportunity</small></span></div>
+                </div>
+              </div>
+              <div className="connection-caption"><span />Relevant introductions. New possibilities.</div>
+            </div>
+          </div>
+          <p className="hero-description"><span className="hero-description-full">Varopic connects businesses with suppliers, service providers, and commercial partners across the United States, helping turn business requirements into productive conversations.</span><span className="hero-description-mobile">We connect your business with the suppliers, services, and partners to move it forward.</span></p>
           <div className="hero-actions flex flex-wrap items-center gap-5"><a className="button button-dark" href="#contact">Discuss an Opportunity <Arrow diagonal /></a><a className="text-link" href="#industries">Explore Our Industries <Arrow /></a></div>
           <p className="hero-note">For small businesses, growing companies,<br className="desktop-break" /> and established enterprises.</p>
         </div>
@@ -170,13 +255,13 @@ function App() {
         <div className="impact-panel">
           <div className="impact-metric">
             <p className="eyebrow">The value of the right connection</p>
-            <p className="impact-amount" aria-label="Over 30 million US dollars"><span className="impact-currency" aria-hidden="true">$</span><span aria-hidden="true">30M</span><span className="impact-plus" aria-hidden="true">+</span></p>
-            <p className="impact-metric-label">In connections value</p>
+            <p ref={impactAmount} className="impact-amount" aria-label="Over 30 million US dollars"><span className="impact-currency" aria-hidden="true">$</span><span aria-hidden="true"><span className="impact-count"><span className="impact-count-size">30</span><span className="impact-count-value">{connectionValue}</span></span>M</span><span className="impact-plus" aria-hidden="true">+</span></p>
+            <p className="impact-metric-label">In Commercial Pipeline Volume</p>
             <p className="impact-metric-note">Commercial relationships. Meaningful possibilities.</p>
           </div>
           <div className="impact-copy">
             <h2 id="impact-title">Helping our<br />clients grow.</h2>
-            <p>With over $30 million in connections value, we help businesses find the suppliers, service providers, and commercial partners to support their next stage of growth.</p>
+            <p>With over <strong>$30 million in commercial contracts facilitated</strong>, Varopic connects businesses with trusted suppliers, service providers, and strategic partners, turning valuable introductions into successful business deals.</p>
             <a className="text-link" href="#contact">Let’s explore your next opportunity <Arrow diagonal /></a>
           </div>
           <ol className="impact-path" aria-label="Our focus for client growth">
@@ -206,21 +291,21 @@ function App() {
       </section>
 
       <section id="contact" className="contact-section container" aria-labelledby="contact-title"><div className="contact-panel">
-        <div className="contact-copy"><h2 id="contact-title">Start a conversation.</h2><p>Tell us about your business and what you’re looking for.</p></div>
+        <div className="contact-copy"><h2 id="contact-title">Talk to the team.</h2><div className="contact-emails"><a href="mailto:hello@varopic.com">hello@varopic.com <Arrow diagonal /></a><a href="mailto:samjezme@varopic.com">samjezme@varopic.com <Arrow diagonal /></a></div></div>
         <form ref={formRef} className="contact-form" onSubmit={submitInquiry} noValidate aria-label="Business inquiry" aria-busy={status === 'sending'}>
           <p className="form-hint">All fields are required.</p>
           <div className="form-row"><div className="field"><label htmlFor="name">Name</label><input {...fieldProps('name')} autoComplete="name" maxLength={120} placeholder="Your name" required value={fields.name} onChange={event => changeField('name', event.target.value)} disabled={status === 'sending'} />{errors.name && <p className="field-error" id="name-error">{errors.name}</p>}</div><div className="field"><label htmlFor="email">Work email</label><input {...fieldProps('email')} type="email" autoComplete="email" maxLength={254} placeholder="you@company.com" required value={fields.email} onChange={event => changeField('email', event.target.value)} disabled={status === 'sending'} />{errors.email && <p className="field-error" id="email-error">{errors.email}</p>}</div></div>
           <div className="form-row"><div className="field"><label htmlFor="company">Company</label><input {...fieldProps('company')} autoComplete="organization" maxLength={180} placeholder="Company name" required value={fields.company} onChange={event => changeField('company', event.target.value)} disabled={status === 'sending'} />{errors.company && <p className="field-error" id="company-error">{errors.company}</p>}</div>
-          <div className="field"><label htmlFor="inquiry">Inquiry type</label><select {...fieldProps('inquiry')} required value={fields.inquiry} onChange={event => changeField('inquiry', event.target.value as Inquiry)} disabled={status === 'sending'}><option value="" disabled>Select an inquiry type</option><option value="partner">Looking for a partner</option><option value="offering">Offering products or services</option><option value="general">General inquiry</option></select>{errors.inquiry && <p className="field-error" id="inquiry-error">{errors.inquiry}</p>}</div></div>
-          <div className="field"><label htmlFor="message">Message</label><textarea {...fieldProps('message')} rows={4} maxLength={5000} placeholder="How can we help?" required value={fields.message} onChange={event => changeField('message', event.target.value)} disabled={status === 'sending'} />{errors.message && <p className="field-error" id="message-error">{errors.message}</p>}</div>
-          {!endpoint && <p className="availability-note">Online inquiries are not available yet. Messages cannot be sent at this time.</p>}
-          <button className="button button-dark submit-button" type="submit" disabled={status === 'sending'}>{status === 'sending' ? 'Sending your inquiry…' : 'Start the Conversation'}<Arrow diagonal /></button>
+          <div className="field"><label htmlFor="inquiry">Inquiry type</label><select {...fieldProps('inquiry')} required value={fields.inquiry} onChange={event => changeField('inquiry', event.target.value as Inquiry)} disabled={status === 'sending'}><option value="" disabled>Inquiry type</option><option value="partner">Looking for a partner</option><option value="offering">Offering products or services</option><option value="general">General inquiry</option></select>{errors.inquiry && <p className="field-error" id="inquiry-error">{errors.inquiry}</p>}</div></div>
+          <div className="field"><label htmlFor="message">Message</label><textarea {...fieldProps('message')} rows={3} maxLength={5000} placeholder="How can we help?" required value={fields.message} onChange={event => changeField('message', event.target.value)} disabled={status === 'sending'} />{errors.message && <p className="field-error" id="message-error">{errors.message}</p>}</div>
+          {!endpoint && <p className="availability-note">Online form coming soon. Please email the team.</p>}
+          <button className="button button-dark submit-button" type="submit" disabled={status === 'sending'}>{status === 'sending' ? 'Sending your inquiry…' : 'Send message'}<Arrow diagonal /></button>
           <div ref={statusRef} tabIndex={-1} className={status === 'error' || status === 'success' ? `form-status ${status}` : 'sr-only'} role={status === 'error' ? 'alert' : 'status'} aria-live={status === 'error' ? 'assertive' : 'polite'}>{status === 'error' || status === 'success' ? statusMessage : status === 'sending' ? 'Sending your inquiry. Please wait.' : ''}</div>
         </form>
       </div></section>
     </main>
 
-    <footer className="container site-footer"><div className="footer-top"><div><a href="#" className="wordmark" aria-label="Varopic home">varopic<span>.</span></a><p>Connecting businesses.<br />Advancing opportunities.</p></div><nav aria-label="Footer navigation"><a href="#about">About</a><a href="#industries">Industries</a><a href="#how-we-work">How We Work</a><a href="#contact">Get in Touch <Arrow diagonal /></a></nav></div><div className="footer-bottom"><p>© {new Date().getFullYear()} Varopic. All rights reserved.</p><p>Business connections across the United States.</p></div></footer>
+    <footer className="container site-footer"><div className="footer-top"><div><a href="#" className="brand-lockup" aria-label="Varopic home"><BrandMark /><span>varopic</span></a><p>Connecting businesses.<br />Advancing opportunities.</p></div><nav aria-label="Footer navigation"><a href="#about">About</a><a href="#industries">Industries</a><a href="#how-we-work">How We Work</a><a href="#contact">Get in Touch <Arrow diagonal /></a></nav></div><div className="footer-bottom"><p>© {new Date().getFullYear()} Varopic. All rights reserved.</p><p>Business connections across the United States.</p></div></footer>
   </>
 }
 
