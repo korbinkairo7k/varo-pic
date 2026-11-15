@@ -1,65 +1,49 @@
-# Varopic: complete current website
+# Varopic
 
-Release: `varopic-brand-refresh-2026-11-14-v2`
+Release: `varopic-12m-team-contact-2026-11-15`
 
-This source matches the current local preview: the official logo, purple and orange accents, redesigned mobile connection graphic, compact header and contact form, and existing animations.
+A responsive React, TypeScript and Vite website with the official Varopic logo, purple and orange accents, connection graphics for desktop and mobile, and direct email contact.
 
-## Replace the old GitHub files
+## Upload the full project to GitHub
 
-1. Extract this ZIP into a new, empty local folder. The extracted root contains `package.json`, `index.html`, `src`, and `public` directly. There is no extra `varopic` folder inside the ZIP.
-2. Open https://github.com/korbinkairo7k/varo-pic and select the `main` branch.
-3. At the repository root, choose **Add file > Upload files**.
-4. Upload ALL the extracted files and folders, including the entire `src` and `public` folders. Replace files with the same paths. Include `.gitignore` and `.env.example` if hidden by your file browser.
-5. Commit the uploaded files to the branch used by your host.
+Extract the ZIP into a fresh folder. Upload ALL extracted contents to the root of `korbinkairo7k/varo-pic`, replacing matching files. The archive contains `package.json`, `src/` and `public/` directly, with no extra enclosing folder.
 
-Do not upload the ZIP itself, and do not place these files in another enclosing folder. An uploaded ZIP does not replace the application files used by the build.
+Upload the entire `src` and `public` folders as well as the top-level files. Uploading only the README or the ZIP itself will leave the old website code in place.
 
-The repository inspected before this release had a newer README alongside older application code. It also lacked the official PNG logo and ICO favicon. Replacing only the top-level files is not enough: replace `src/App.tsx` and `src/styles.css`, and upload the `public` assets too.
+After uploading, confirm:
+- `src/App.tsx` contains `desktop-connections` and `team-card`.
+- The contact section has two email links and no form.
+- `public/images/varopic-mark.png` and `public/favicon.ico` exist.
+- `public/version.json` identifies this release.
 
-## Confirm the upload is current
+## Run and build
 
-After committing, check these exact paths in GitHub:
-
-- `src/App.tsx` contains `Your business, connected.` and `function BrandMark()`.
-- `src/styles.css` contains `--brand-purple:#5416ce`.
-- `public/images/varopic-mark.png` exists.
-- `public/favicon.ico` exists.
-- `public/version.json` contains `varopic-brand-refresh-2026-11-14-v2`.
-
-## Deployment
-
-Use Node.js 22.12 or newer. The build settings are:
-
-- Project root: repository root (the folder containing `package.json`).
-- Framework: Vite.
-- Install command: `npm ci`.
-- Build command: `npm run build`.
-- Published output: `dist`.
-
-`vercel.json` supplies the Vite install/build/output settings for Vercel. Confirm that your hosting project uses this repository, its updated branch, and the repository root, then deploy the new commit. Redeploying an older commit will continue showing the old website.
-
-After deployment, open `/version.json` on your actual website. It should display `varopic-brand-refresh-2026-11-14-v2`. A missing/different release means the new package is not being served at that URL.
-
-Hosting reference: https://vercel.com/docs/builds/configure-a-build
-
-This version uses domain-root asset paths. GitHub Pages under `/varo-pic/` requires a base-path adjustment; uploading this source to GitHub alone does not enable Pages hosting. Update the canonical and social sharing URLs in `index.html` for your production domain.
-
-## Run locally
+Use Node.js 22.12 or newer.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-## Build locally
-
 ```sh
 npm run build
 npm run preview
 ```
 
-## Contact form and assets
+The build produces `dist/`. Vercel settings are included in `vercel.json`: use the repository root, the Vite framework, `npm ci`, `npm run build`, and output directory `dist`. Deploy the newly uploaded commit. After deployment, check `/version.json` on your website to confirm the release.
 
-The email links point to hello@varopic.com and samjezme@varopic.com. The contact form remains unconnected and directs visitors to email the team. To activate it, configure `VITE_CONTACT_ENDPOINT` before building. The endpoint must accept JSON POST requests with `name`, `email`, `company`, `inquiry`, and `message`, and return a successful HTTP status with `{ "accepted": true }` after accepting the message for storage or delivery. Configure CORS if needed. Never put secret keys in frontend variables. Verify real delivery before accepting inquiries.
+Asset paths assume hosting at the domain root. A GitHub Pages repository subdirectory requires adjusting the base and public asset paths first. Update the canonical and sharing URLs in `index.html` for your actual production domain.
 
-The original official logo and favicon are included unchanged. Image credits are in `IMAGE-SOURCES.md`; font licenses are in `public/font-licenses/`. The archive excludes Git history, hosting credentials, installed dependencies, and generated build files.
+## Direct email contact
+
+The contact card links to:
+- team@varopic.com
+- sam@varopic.com
+
+These links open the visitor's email application. There is no contact form, submission endpoint, or backend to configure.
+
+## Assets and editing
+
+Page copy and layout are in `src/App.tsx`; styles are in `src/styles.css`. Both the desktop and mobile hero graphics use the unchanged official logo and lightweight vector icons. Motion respects reduced-motion preferences.
+
+Image credits are in `IMAGE-SOURCES.md`; bundled typeface licenses are in `public/font-licenses/`. The ZIP excludes dependencies, generated build output, Git history, and hosting credentials.
