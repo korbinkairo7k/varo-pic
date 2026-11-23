@@ -21,7 +21,7 @@ Paths below are relative to `public/images/`. Each asset also has a `-600.jpg` v
 | industry-manufacturing.jpg | Automated machinery and conveyors on a manufacturing floor | Freek Wolsink | [Automated Factory Conveyor System in Operation](https://www.pexels.com/photo/automated-factory-conveyor-system-in-operation-34222005/) |
 | industry-logistics.jpg | Palletized cartons organized on tall warehouse shelves | Ryan Klaus | [Low Angle Shot of Boxes Standing on the Shelves in a Warehouse](https://www.pexels.com/photo/low-angle-shot-of-boxes-standing-on-the-shelves-in-a-warehouse-27111449/) |
 | industry-services.jpg | Modern commercial building with glass frontage and landscaped grounds | Zulfugar Karimov | [Modern Glass Office Building Surrounded by Greenery](https://www.pexels.com/photo/modern-glass-office-building-surrounded-by-greenery-33719788/) |
-| industry-technology.jpg | Rack-mounted servers and indicator lights in a data center | panumas nikhomkhai | [Light on Computer](https://www.pexels.com/photo/light-on-computer-17489153/) |
+| industry-technology-work.jpg | Two developers reviewing software code together on a laptop | Christina Morillo | [Two Women Looking at the Code at Laptop](https://www.pexels.com/photo/two-women-looking-at-the-code-at-laptop-1181263/) |
 
 ## Crop guidance
 
@@ -32,8 +32,10 @@ Paths below are relative to `public/images/`. Each asset also has a `-600.jpg` v
 - Food card: the conveyor and workers remain clear at 16:10; central framing is appropriate.
 - Refinery card: prefer center 55% to emphasize infrastructure rather than the pale sky.
 - Logistics card is intentionally darker; do not overlay text on the photo.
-- Technology feature: center crop, with slightly reduced saturation in CSS to match the restrained palette. Source and license verified on 4 November 2026; 1200px and 600px local variants.
+- Technology card: center crop keeps the laptop and pointing hand visible. Replaced on 16 November 2026 with Christina Morillo's Pexels photo; 1200px and 600px local variants, lightly reduced saturation.
 
 ## Image download pattern
 
 For provenance, each local asset was downloaded from `https://images.pexels.com/photos/PHOTO_ID/pexels-photo-PHOTO_ID.jpeg?auto=compress&cs=tinysrgb&w=WIDTH&q=QUALITY`, using the photo ID in the linked source page. No external runtime image dependency is needed.
+
+Team portraits: five original photographs supplied by the user, stored as team-member-1.jpg through team-member-5.jpg.
