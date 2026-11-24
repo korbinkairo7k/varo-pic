@@ -1,6 +1,6 @@
 # Varopic
 
-Release: `varopic-refined-menu-2026-11-23`
+Release: `varopic-preview-verified-2026-11-23-r2`
 
 A responsive React, TypeScript and Vite website with the official Varopic logo, purple and orange accents, connection graphics for desktop and mobile, and direct email contact.
 
