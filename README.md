@@ -1,49 +1,13 @@
-# Varopic
+# Varopic: current preview release, November 24, 2026
 
-Release: `varopic-preview-verified-2026-11-23-r2`
+This is a ready-to-deploy export of the current preview. All upload files are at the top level.
 
-A responsive React, TypeScript and Vite website with the official Varopic logo, purple and orange accents, connection graphics for desktop and mobile, and direct email contact.
+1. Extract this ZIP.
+2. Open the main page of korbinkairo7k/varo-pic on GitHub, on the branch connected to Vercel.
+3. Select Add file > Upload files. Select ALL files inside the extracted folder, not the ZIP or its enclosing folder.
+4. Commit the upload, including replacements for index.html, package.json, package-lock.json and vercel.json.
+5. Wait for Vercel's deployment to finish. The deployed /version.json must report varopic-flat-upload-2026-11-24.
 
-## Upload the full project to GitHub
+The old src and public folders can remain. This release does not build from them. The new build checks every release file and fails if one is missing or outdated instead of deploying old content.
 
-Extract the ZIP into a fresh folder. Upload ALL extracted contents to the root of `korbinkairo7k/varo-pic`, replacing matching files. The archive contains `package.json`, `src/` and `public/` directly, with no extra enclosing folder.
-
-Upload the entire `src` and `public` folders as well as the top-level files. Uploading only the README or the ZIP itself will leave the old website code in place.
-
-After uploading, confirm:
-- `src/App.tsx` contains `desktop-connections` and `team-card`.
-- The contact section has two email links and no form.
-- `public/images/varopic-mark.png` and `public/favicon.ico` exist.
-- `public/version.json` identifies this release.
-
-## Run and build
-
-Use Node.js 22.12 or newer.
-
-```sh
-npm ci
-npm run dev
-```
-
-```sh
-npm run build
-npm run preview
-```
-
-The build produces `dist/`. Vercel settings are included in `vercel.json`: use the repository root, the Vite framework, `npm ci`, `npm run build`, and output directory `dist`. Deploy the newly uploaded commit. After deployment, check `/version.json` on your website to confirm the release.
-
-Asset paths assume hosting at the domain root. A GitHub Pages repository subdirectory requires adjusting the base and public asset paths first. Update the canonical and sharing URLs in `index.html` for your actual production domain.
-
-## Direct email contact
-
-The contact card links to:
-- team@varopic.com
-- sam@varopic.com
-
-These links open the visitor's email application. There is no contact form, submission endpoint, or backend to configure.
-
-## Assets and editing
-
-Page copy and layout are in `src/App.tsx`; styles are in `src/styles.css`. Both the desktop and mobile hero graphics use the unchanged official logo and lightweight vector icons. Motion respects reduced-motion preferences.
-
-Image credits are in `IMAGE-SOURCES.md`; bundled typeface licenses are in `public/font-licenses/`. The ZIP excludes dependencies, generated build output, Git history, and hosting credentials.
+This is a compiled deployment package, not the editable React source. The original editable project is retained in the Codex workspace. To update this export, regenerate it from that project. Do not edit the compiled files manually because their integrity hashes would no longer match.
